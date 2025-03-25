@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # Service Backend Laravel
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    # env_file:
+    #   - ./api/.env
+    # ports:
+    #   - "8000:8000"
+    volumes:
+      - ./api:/api
+    depends_on:
+      - db
+    networks:
+      - centralis-network
+    labels:
+      # Main
+      traefik.enable: true
+      traefik.http.middlewares.kevin-api-web-redirect.redirectscheme.scheme: https
+      traefik.http.services.kevin-api.loadbalancer.server.port: 8000
+      # Web
+      traefik.http.routers.kevin-api-insecure.rule: Host(`kevin-api.acadenice.fr`)
+      traefik.http.routers.kevin-api-insecure.entrypoints: web
+      traefik.http.routers.kevin-api-insecure.service: kevin-api
+      # traefik.http.routers.kevin-insecure.middlewares: kevin-web-redirect
+      # Websecure
+      traefik.http.routers.kevin-api.rule: Host(`kevin-api.acadenice.fr`)
+      traefik.http.routers.kevin-api.entrypoints: websecure
+      traefik.http.routers.kevin-api.service: kevin-api
+      traefik.http.routers.kevin-api.tls.certresolver: myresolver
+      # Local domain
+      traefik.http.routers.kevin-api-local-insecure.rule: Host(`kevin.${LOCAL_DOMAIN}`)
+      traefik.http.routers.kevin-api-local-insecure.entrypoints: web
+      traefik.http.routers.kevin-api-local-insecure.service: kevin-api
+      # traefik.http.routers.kevin-local-insecure.middlewares: kevin-web-redirect
+      # Local domain secure
+      traefik.http.routers.kevin-api-local.rule: Host(`kevin.${LOCAL_DOMAIN}`)
+      traefik.http.routers.kevin-api-local.entrypoints: websecure
+      traefik.http.routers.kevin-api-local.service: kevin-api
+      traefik.http.routers.kevin-api-local.tls: true
+    
+      
+
+  # Service Base de données MariaDB
+  db:
+    image: mariadb:latest
+    hostname: db_kbe
+    # ports:
+    #   - "3306:3306"
+    env_file: ./api/.env
+    volumes:
+      - kevin-data:/var/lib/mysql
+    environment:
+      MARIADB_ROOT_PASSWORD: fkdonf290SEZNKsdk
+      MARIADB_DATABASE: ${DB_DATABASE}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - centralis-network
+  webdb:
+    image: webdb/app
+    restart: always
+    extra_hosts:
+        - "host.docker.internal:host-gateway"
+    volumes:
+        - "$HOME/.ssh:/root/.ssh:ro"
+        - "$HOME/.webdb:/usr/src/app/static/version"
+    #ports:
+    #   - "127.0.0.1:22071:22071"
+    networks:
+      - centralis-network
+    labels:
+      traefik.enable: true
+    # Main
+      traefik.http.services.kbe-webdb.loadbalancer.server.port: 22071
+    # Web
+      traefik.http.routers.kbe-webdb-insecure.rule: Host(`kbe-webdb.acadenice.fr`)
+      traefik.http.routers.kbe-webdb-insecure.entrypoints: web
+      traefik.http.routers.kbe-webdb-insecure.service: kbe-webdb
+    # Websecure
+      traefik.http.routers.kbe-webdb.rule: Host(`kbe-webdb.acadenice.fr`)
+      traefik.http.routers.kbe-webdb.entrypoints: websecure
+      traefik.http.routers.kbe-webdb.service: kbe-webdb
+      traefik.http.routers.kbe-webdb.tls.certresolver: myresolver
+    # Local domain
+      traefik.http.routers.kbe-webdb-local-insecure.rule: Host(`kbe-webdb.${LOCAL_DOMAIN}`)
+      traefik.http.routers.kbe-webdb-local-insecure.entrypoints: web
+      traefik.http.routers.kbe-webdb-local-insecure.service: kbe-webdb
+    # Local domain secure
+      traefik.http.routers.kbe-webdb-local.rule: Host(`kbe-webdb.${LOCAL_DOMAIN}`)
+      traefik.http.routers.kbe-webdb-local.entrypoints: websecure
+      traefik.http.routers.kbe-webdb-local.service: kbe-webdb
+      traefik.http.routers.kbe-webdb-local.tls: true
+
+  
+
+networks:
+  centralis-network:
+    driver: bridge
+
+volumes:
+  kevin-data:
