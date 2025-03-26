@@ -3,6 +3,7 @@ version: '3.8'
 services:
   # Service Backend Laravel
   api:
+    restart: always
     build:
       context: ./api
       dockerfile: Dockerfile
@@ -46,6 +47,7 @@ services:
 
   # Service Base de données MariaDB
   db:
+    restart: always
     image: mariadb:latest
     hostname: db_kbe
     # ports:
