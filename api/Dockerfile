@@ -25,6 +25,6 @@ WORKDIR /api
 
 EXPOSE 8000
 
-CMD composer install && php artisan key:generate && php artisan migrate:fresh && php artisan serve --host=0.0.0.0 --port=8000
+CMD composer install && php artisan key:generate && php artisan migrate:fresh --seed && php artisan serve --host=0.0.0.0 --port=8000
 
 # composer create-project laravel/laravel /api
