@@ -10,28 +10,61 @@ class RolePermissionSeeder extends Seeder
 {
     public function run()
     {
-        // Création de permissions
+        // 🔐 Définir toutes les permissions disponibles dans le système
         $permissions = [
-            //'edit users', 'delete users', 'create users', 'view users',
-            //'edit own profile', // Permission spécifique pour les actions sur le profil utilisateur
-            'view own profile', // Permission pour voir son propre profil
+            'manage users',
+            'view dashboard',
+            'edit all',
+            'view users',
+            'assign tasks',
+            'view own tasks',
+            'update task status',
+            'create ticket',
+            'view own profile',
+            'send message',
+            'resolve ticket',
+            'access system logs',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+        // ✅ Créer les permissions
+        foreach ($permissions as $permissionName) {
+            Permission::firstOrCreate(['name' => $permissionName]);
         }
 
-        // Création du rôle 'super admin' et assignation de toutes les permissions
-        // $roleSuperAdmin = Role::create(['name' => 'super admin']);
-        // $roleSuperAdmin->givePermissionTo(Permission::all());
+        // 🎭 Définir les rôles et leurs permissions
+        $roles = [
+            'admin' => [
+                'manage users',
+                'view dashboard',
+                'edit all',
+            ],
+            'gestionnaire' => [
+                'view users',
+                'assign tasks',
+                'view dashboard',
+            ],
+            'prestataire' => [
+                'view own tasks',
+                'update task status',
+            ],
+            'client' => [
+                'create ticket',
+                'view own profile',
+                'send message',
+            ],
+            'technique' => [
+                'resolve ticket',
+                'access system logs',
+            ],
+            'onhold' => [
+                'view own profile',
+            ],
+        ];
 
-        // // Création du rôle 'admin' et assignation des permissions (sauf 'delete users')
-        // $roleAdmin = Role::create(['name' => 'admin']);
-        // $roleAdmin->givePermissionTo(['edit articles', 'delete articles', 'publish articles', 'edit users', 'create users', 'view users']);
-
-        // Création du rôle 'user' et assignation de la permission de gestion de son propre profil
-        $roleUser = Role::create(['name' => 'onhold']);
-        $roleUser->givePermissionTo(['view own profile']);
+        // 🧩 Création des rôles et assignation des permissions
+        foreach ($roles as $roleName => $rolePermissions) {
+            $role = Role::firstOrCreate(['name' => $roleName]);
+            $role->syncPermissions($rolePermissions); // ⚠️ Sync pour éviter les doublons
+        }
     }
-
 }
