@@ -11,11 +11,15 @@ use Laravel\Sanctum\HasApiTokens;
 
 
 class User extends Authenticatable
-{
+{   
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
 
+    // app/Models/User.php
+    protected $connection = 'mysql';
+    
     /**
      * The attributes that are mass assignable.
      *

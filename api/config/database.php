@@ -60,6 +60,16 @@ return [
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
+
+        ],
+        'second_db' => [
+            'driver' => 'mysql',
+            'url' => env('DB_URL'),
+            'host' => env('SECOND_DB_HOST', '127.0.0.1'),
+            'port' => env('SECOND_DB_PORT', '3306'),
+            'database' => env('SECOND_DB_DATABASE', 'laravel'),
+            'username' => env('SECOND_DB_USERNAME', 'root'),
+            'password' => env('SECOND_DB_PASSWORD', ''),
         ],
 
         'mariadb' => [
