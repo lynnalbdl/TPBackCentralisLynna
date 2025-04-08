@@ -62,14 +62,24 @@ return [
             ]) : [],
 
         ],
+
         'second_db' => [
             'driver' => 'mysql',
-            'url' => env('DB_URL'),
             'host' => env('SECOND_DB_HOST', '127.0.0.1'),
             'port' => env('SECOND_DB_PORT', '3306'),
-            'database' => env('SECOND_DB_DATABASE', 'laravel'),
-            'username' => env('SECOND_DB_USERNAME', 'root'),
+            'database' => env('SECOND_DB_DATABASE', 'DBctls2'),
+            'username' => env('SECOND_DB_USERNAME', 'centralis_kbe'),
             'password' => env('SECOND_DB_PASSWORD', ''),
+            'unix_socket' => env('SECOND_DB_SOCKET', ''),
+            'charset' => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::ATTR_TIMEOUT => 5,
+            ]) : [],
         ],
 
         'mariadb' => [
