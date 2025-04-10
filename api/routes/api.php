@@ -40,3 +40,6 @@ Route::get('/test-db2', function () {
         return response()->json(['error' => $e->getMessage()], 500);
     }
 });
+use App\Http\Controllers\API\Db2\UserDb2AuthController;
+
+Route::post('/db2/login', [UserDb2AuthController::class, 'login']);
