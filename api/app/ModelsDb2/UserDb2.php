@@ -4,14 +4,14 @@ namespace App\ModelsDb2;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Laravel\Sanctum\HasApiTokens;
 
 class UserDb2 extends Model
 {
-    use HasFactory;
-
-    protected $connection = 'second_db'; // Connexion vers la 2e base
-
-    protected $table = 'UserDb2'; // Optionnel mais clair
+    use HasFactory, HasApiTokens;
+    
+    protected $connection = 'second_db';
+    protected $table = 'user_db2s';
 
     protected $fillable = [
         'name',
