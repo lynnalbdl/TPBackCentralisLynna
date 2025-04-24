@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful;
 use App\Http\Controllers\API\AuthController;
+use App\Http\Controllers\interlocuteurSubController;
 
 Route::post('/register', [AuthController::class, 'register']);
 
@@ -43,3 +44,6 @@ Route::get('/test-db2', function () {
 use App\Http\Controllers\API\Db2\UserDb2AuthController;
 
 Route::post('/db2/login', [UserDb2AuthController::class, 'login']);
+Route::resource('interlocuteur-subs', InterlocuteurSubController::class);
+Route::resource('entites', EntitéController::class);
+Route::resource('contrats', ContratController::class);
